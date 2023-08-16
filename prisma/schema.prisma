@@ -1,0 +1,114 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["fullTextSearch", "fullTextIndex"]
+  binaryTargets   = ["native", "linux-musl", "debian-openssl-1.0.x", "debian-openssl-1.1.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Gender {
+  Not_known
+  Male
+  Female
+  Not_applicable
+}
+
+model Users {
+  user_id    String    @id @default(uuid())
+  first_name String
+  last_name  String
+  email      String
+  password   String
+  phone      String?
+  dob        String?
+  photo      String?
+  gender     Gender?   @default(Not_known)
+  created_at DateTime? @default(now())
+  updated_at DateTime? @updatedAt
+  is_active  Boolean?  @default(true)
+  Address    Address[]
+  Admin      Admin?
+
+  @@unique([email])
+  @@index([email])
+  @@index([user_id])
+  @@map("users")
+}
+
+model Admin {
+  admin_id   String    @id @default(uuid())
+  user_id    String    @unique
+  user       Users     @relation(fields: [user_id], references: [user_id])
+  is_active  Boolean?  @default(true)
+  created_at DateTime? @default(now())
+  updated_at DateTime? @updatedAt
+
+  @@map("admin")
+}
+
+model Address {
+  address_id Int       @id @default(autoincrement())
+  address_1  String
+  address_2  String?
+  city       String?
+  postalcode String?
+  region     String?
+  country    String?
+  created_at DateTime? @default(now())
+  updated_at DateTime? @updatedAt
+  is_active  Boolean?  @default(true)
+  user_id    String?
+  users      Users?    @relation(fields: [user_id], references: [user_id])
+
+  @@map("address")
+}
+
+model Product {
+  product_id Int       @id @default(autoincrement())
+  name       String
+  descript   String?
+  price      Float
+  category   String
+  quantity   Int
+  is_active  Boolean?  @default(true)
+  created_at DateTime  @default(now())
+  updated_at DateTime @updatedAt
+  skus       SKU[]
+
+  @@map("product")
+}
+
+model SKU {
+  sku_id    Int      @id @default(autoincrement())
+  product   Product  @relation(fields: [productId], references: [product_id])
+  productId Int
+  skusColor Color[]
+  skusSize  Size[]
+
+  @@map("sku")
+}
+
+model Color {
+  color_id   Int      @id @default(autoincrement())
+  productUid String
+  name       String
+  stock      Int
+  sku_id     Int
+  sku        SKU      @relation(fields: [sku_id], references: [sku_id])
+
+  @@map("color")
+}
+
+model Size {
+  size_id    Int      @id @default(autoincrement())
+  productUid String
+  name       String
+  stock      Int
+  sku_id     Int
+  sku        SKU      @relation(fields: [sku_id], references: [sku_id])
+
+  @@map("size")
+}

@@ -1,0 +1,9 @@
+/node_modules/
+
+*.log
+
+src/upload/*.*
+prisma/
+
+ormconfig.js
+yarn.lock

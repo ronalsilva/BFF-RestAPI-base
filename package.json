@@ -1,0 +1,48 @@
+{
+  "name": "BFF-RestAPI-base",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "set NODE_ENV='development' && nodemon --watch 'src/**/*' -e ts,tsx --exec ts-node ./src/main.ts",
+    "db": "npx prisma db push",
+    "build": "tsc --skipLibCheck",
+    "lint": "eslint . --ext js,jsx,ts,tsx --fix"
+  },
+  "author": "Ronald Junger",
+  "homepage": "https://github.com/ronalsilva/BFF-RestAPI-base#readme",
+  "license": "ISC",
+  "dependencies": {
+    "@prisma/client": "^4.16.0",
+    "@types/jsonwebtoken": "^8.3.0",
+    "bcryptjs": "^2.4.3",
+    "eslint": "^8.46.0",
+    "joi": "^14.3.1",
+    "jsonwebtoken": "^8.4.0",
+    "koa": "^2.6.2",
+    "koa-body": "^4.0.6",
+    "koa-bodyparser": "^4.2.1",
+    "koa-joi-swagger-ts": "^1.0.14",
+    "koa-router": "^7.4.0",
+    "koa2-swagger-ui": "^2.11.3",
+    "lodash": "^4.17.11",
+    "log4js": "^4.0.0",
+    "md5": "^2.2.1",
+    "mongoose": "^7.4.2",
+    "omit.js": "^1.0.0",
+    "reflect-metadata": "^0.1.13",
+    "typeorm": "^0.2.12"
+  },
+  "devDependencies": {
+    "@types/bcryptjs": "^2.4.2",
+    "@types/joi": "^14.0.1",
+    "@types/koa": "^2.0.48",
+    "@types/koa-router": "^7.0.39",
+    "@types/lodash": "^4.14.64",
+    "nodemon": "^1.18.9",
+    "prisma": "^4.16.0",
+    "ts-node": "^8.0.1",
+    "tslint": "^5.12.1",
+    "typescript": "^3.2.4"
+  }
+}
