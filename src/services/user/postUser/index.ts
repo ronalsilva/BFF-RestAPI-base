@@ -18,17 +18,20 @@ const createUser = () => ({
             response = await PRISMA.users.create({
                 data: userData,
             });
-        } catch (err) {
-            console.log(err)
-            switch (err.code) {
+        } catch (error) {
+            switch (error.code) {
                 case 'P2002':
-                    throw new Error("User already created.");
-                case 409:
-                    throw new Error("This is an example exception.");
-                case 500:
-                    throw new Error("This is an example exception.");
+                    console.log(`registered field ${error.meta.target}`)
+					throw new Error(`registered field ${error.meta.target}`);
+                case 'P1013':
+                    console.log(`Invalid field ${error.meta.target}`)
+					throw new Error(`Invalid field ${error.meta.target}`);
+                case 'P1017':
+                    console.log(`The server closed the connection.`)
+					throw new Error(`The server closed the connection.`);
                 default:
-                    throw new Error( `EXCEPTION: ${err.message}`);
+                    console.log(`The server closed the connection.`)
+                    throw new Error(`The server closed the connection.`);
             }
         }
         delete response.password
