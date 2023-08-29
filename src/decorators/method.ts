@@ -6,6 +6,20 @@ export interface IMethod {
 }
 
 /**
+ *  If it is a class method annotation,
+ *  typescript is implemented by prototype,
+ *  btw,
+ *  class User extends BaseController {
+ *      @get('/')
+ *      index(){
+ *
+ *      }
+ *  }
+ *
+ *  will cause the parent controller annotation pollution
+ */
+
+/**
  * Prevent inheritance pollution
  * @type {Map<any, any>}
  */

@@ -33,12 +33,12 @@ The project is structured as follows:
 
 1. Clone this repository.
 2. Configure the connection to the PostgreSQL database in the `.env` file.
-  * DATABASE_URL="postgresql://postgres:admin@localhost:5432/basebackend", PORT=8080
+  * DATABASE_URL="postgresql://postgres:admin@localhost:5432/database", PORT=8080
 3. Install the dependencies using `npm install` or `yarn install`.
 3. Install docker `docker-compose up -d`.
-3. Start the `npx prisma db push` database.
+3. Start the `npm run db` or `yarn db` database.
 4. Start the backend server using `npm run start` or `yarn start`.
-5. Access the frontend integrated with KOA Swagger to view the API documentation `http://localhost:3005/swagger`.
+5. Access the frontend integrated with KOA Swagger to view the API documentation `http://localhost:3002/docs`.
 
 ## Contribution
 

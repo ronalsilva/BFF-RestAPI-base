@@ -1,5 +1,5 @@
 import {  registerMiddleware } from './utils';
-import { AuthFunc } from '../utils/config/middlewares';
+import { AuthFunc } from './../utils/middlewares';
 
 export function login_required(): MethodDecorator {
   return function (target: any, key: string) {

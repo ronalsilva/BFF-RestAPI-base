@@ -2,7 +2,7 @@ import { TAG_DEFINITION_NAME, TAG_DEFINITION_DESCRIPTION } from './definition';
 
 import * as joi from 'joi';
 
-import parse from '../utils/config/JoiToSwagger';
+import parse from '../utils/JoiToSwagger';
 
 export interface ISchema {
   type?: string;

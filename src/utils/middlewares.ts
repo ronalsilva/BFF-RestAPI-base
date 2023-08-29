@@ -1,7 +1,7 @@
 import * as log4js from 'log4js';
 import * as jwt from 'jsonwebtoken';
 // import { getConnection } from "typeorm";
-import { IContext } from '../../decorators/interface';
+import { IContext } from './../decorators/interface';
 import { isDebug, log4jsConfig, AppConfig } from "./config";
 
 log4js.configure(log4jsConfig);
@@ -41,7 +41,7 @@ export const RequestInject = (url, handler) => {
   }
 }
 
-export const AuthFunc = async (ctx: IContext, next) => {
+export const AuthFunc = async (ctx, next) => {
   const token = (ctx.headers['Authorization'] || '').replace('Bearer ', '');
   try {
     // 1. token in headers

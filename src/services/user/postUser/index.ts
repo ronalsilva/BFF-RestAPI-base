@@ -1,8 +1,9 @@
 import { hash } from "bcryptjs";
-import { PRISMA } from "../../../utils/config/db.server";
+import { PRISMA } from "../../../utils/db.server";
+import { createUserRequest, createUserResponse } from "../../../interfaces/users/create";
 
-const createUser = () => ({
-    async create(body: any): Promise<any> {
+class CreateUser {
+    async create(body: createUserRequest): Promise<createUserResponse> {
         let response;
         const password = await hash(body.password, 10);
 
@@ -36,7 +37,7 @@ const createUser = () => ({
         }
         delete response.password
         return response;
-    },
-});
+    }
+};
 
-export default createUser;
+export default new CreateUser;

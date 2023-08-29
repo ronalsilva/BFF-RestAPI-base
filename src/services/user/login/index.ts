@@ -1,10 +1,11 @@
-import { PRISMA } from "../../../utils/config/db.server";
+import { PRISMA } from "../../../utils/db.server";
 import * as jwt from "jsonwebtoken";
-import { AppConfig } from '../../../utils/config/config';
+import { AppConfig } from '../../../utils/config';
 import { compare } from "bcryptjs";
+import { loginResponse } from "../../../interfaces/users/login";
 
-const login = () => ({
-    async get(email: string, password: string): Promise<any> {
+class Login {
+    async get(email: string, password: string): Promise<loginResponse> {
         let user;
 
         try {
@@ -39,7 +40,7 @@ const login = () => ({
         }, AppConfig.appKey, { expiresIn: 60 * 60 });
         
         return { user, token };
-    },
-});
+    }
+};
 
-export default login;
+export default new Login;

@@ -1,10 +1,10 @@
 import "reflect-metadata";
-import * as koa from 'koa';
-import * as koaBody from 'koa-body';
+import koa from 'koa';
+import koaBody from 'koa-body';
 import { KJSRouter, } from './decorators';
-import { PRISMA } from "./utils/config/db.server";
-import { logFunc } from "./utils/config/middlewares";
-import { swaggerConfig, bodyParserConfig, AppConfig } from './utils/config/config';
+import { PRISMA } from "./utils/db.server";
+import { logFunc } from "./utils/middlewares";
+import { swaggerConfig, bodyParserConfig, AppConfig } from './utils/config';
 
 const main = async () => {
 

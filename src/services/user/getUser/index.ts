@@ -1,8 +1,8 @@
-import { PRISMA } from "../../../utils/config/db.server";
-// import CustomError from "../../../utils/customError";
+import { PRISMA } from "../../../utils/db.server";
+import { getUserResponse } from "../../../interfaces/users/search";
 
-const getUser = () => ({
-	async user(user_id: any): Promise<any> {
+class GetUser {
+	async userGet(user_id: string): Promise<getUserResponse> {
 		let response;
 		try {
 			response = await PRISMA.users.findFirst({
@@ -26,7 +26,7 @@ const getUser = () => ({
 		}
 
 		return response;
-	},
-});
+	}
+};
 
-export default getUser;
+export default new GetUser;

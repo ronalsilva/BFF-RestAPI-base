@@ -11,6 +11,7 @@ export const swaggerConfig = {
     version: "1.0.0",
     title: "Interface Documentation System"
   },
+  // host: "localhost:3002",
   basePath: "",
   schemes: ["http"],
   paths: {},

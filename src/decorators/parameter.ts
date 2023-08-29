@@ -73,6 +73,7 @@ export function parameter(name: string, schema?: ISchema | joi.Schema, paramIn?:
       if (error) {
         return ctx.throw(400, JSON.stringify({ code: 400, message: error.message }));
       }
+      // 参数验证完成, 再覆盖$getParams方法
       ctx.$getParams = () => {
         return Object.assign(value.params, value.body, value.query);
       }

@@ -1,12 +1,12 @@
-import * as fs from 'fs';
-import * as _ from "lodash";
-import * as path from 'path';
-import * as Router from "koa-router";
+import fs from 'fs';
+import * as _ from "lodash-es";
+import path from 'path';
+import Router from "koa-router";
 import { TAG_METHOD } from "./method";
 import { ISwagger, IPath } from './interface';
 import { TAG_CONTROLLER } from "./controller";
 import { TAG_DEFINITION_NAME } from "./definition";
-import { RequestInject } from '../utils/config/middlewares';
+import { RequestInject } from '../utils/middlewares';
 import { TAG_MIDDLE_METHOD, TAG_GLOBAL_METHOD, TAG_MIDDLE_WARE } from "./utils";
 
 const koaSwagger = require("koa2-swagger-ui");
@@ -127,12 +127,18 @@ export class KJSRouter {
     return this.router;
   }
 
+  /**
+   *根据目录递归查找目录下面的文件
+   * @param path string 
+   * @return fileList array[string]
+   */
   getFiles = (path) => {
     let fileList = [];
     const findPathFunc = (basePath) => {
       const files = fs.readdirSync(basePath);
       files.forEach((file) => {
         const filePath = `${basePath}/${file}`;
+        // js 文件
         if (fs.statSync(filePath).isFile()) {
           if (file.endsWith('.ts')) {
             fileList.push(filePath);
@@ -146,6 +152,10 @@ export class KJSRouter {
     return fileList;
   }
 
+  /**
+   * 加载controller
+   * @param path [string] 路径
+   */
   loadControllers = async path => {
     for (const file of this.getFiles(path)) {
       const controller = await import(file);
@@ -156,6 +166,10 @@ export class KJSRouter {
     }
   }
 
+  /**
+   * 加载schema配置
+   * @param path [string] 路径
+   */
   loadDefinitions = async path => {
     for (const file of this.getFiles(path)) {
       const definition = await import(file);
@@ -166,8 +180,13 @@ export class KJSRouter {
     }
   }
 
+  /**
+   *初始化app
+   */
   initApp(app) {
+    // 获取swagger配置
     this.setSwaggerFile('swagger.json');
+    // 拉起swagger的路径
     this.loadSwaggerUI('/docs');
 
     this.loadControllers(

@@ -32,15 +32,15 @@ import loginResponse from "./response/loginResponse";
     @tag('User')
     @summary('Search user')
     @parameter('userid', joi.string().description('teste').default(''))
-    @login_required()
+    // @login_required()
     async queryUsers(ctx: IContext) {
         const {
             userid
         } = ctx.$getParams();
 
-        const result = await getUserService().user(userid);
+        const result = await getUserService.userGet(userid);
 
-        return userid;
+        return result;
     }
 
     @post('/create')
@@ -50,7 +50,7 @@ import loginResponse from "./response/loginResponse";
     @response(200, createUserResponse)
     async postUser(ctx: IContext) {
         const { body } = ctx.request;
-        const result = await postUserService().create(body);
+        const result = await postUserService.create(body);
         return result;
     }
 
@@ -62,7 +62,7 @@ import loginResponse from "./response/loginResponse";
     async login(ctx: IContext) {
         const { email, password } = ctx.$getParams();
 
-        const result = await loginService().get(email, password)
+        const result = await loginService.get(email, password)
 
         ctx.cookies.set('token', result.token);
         return result;

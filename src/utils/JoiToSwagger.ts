@@ -1,7 +1,8 @@
 'use strict';
 
 import * as joi from 'joi';
-import {find, get, set, merge} from 'lodash';
+import * as _ from "lodash-es";
+// import {find, get, set, merge} from 'lodash';
 
 const patterns = {
 	alphanum: '^[a-zA-Z0-9]*$',
@@ -80,11 +81,11 @@ export default function parse (schema, existingComponents = null) {
 
 	// if the schema has a definition class name, and that
 	// definition is already defined, just use that definition
-	if (metaDefName && get(existingComponents, [ metaDefType, metaDefName ])) {
+	if (metaDefName && _.get(existingComponents, [ metaDefType, metaDefName ])) {
 		return { swagger: refDef(metaDefType, metaDefName) };
 	}
 
-	if (get(schema, '_flags.presence') === 'forbidden') {
+	if (_.get(schema, '_flags.presence') === 'forbidden') {
 		return {};
 	}
 
@@ -115,18 +116,18 @@ export default function parse (schema, existingComponents = null) {
 		}
 	}
 
-	var label = get(schema, '_flags.label');
+	var label = _.get(schema, '_flags.label');
 	if (label) {
 		swagger.title = label;
 	}
 
-	var defaultValue = get(schema, '_flags.default');
+	var defaultValue = _.get(schema, '_flags.default');
 	if (defaultValue && typeof defaultValue !== 'function') {
 		swagger.default = defaultValue;
 	}
 
 	if (metaDefName) {
-		set(components, [ metaDefType, metaDefName ], swagger);
+		_.set(components, [ metaDefType, metaDefName ], swagger);
 		return { swagger: refDef(metaDefType, metaDefName), components };
 	}
 
@@ -141,37 +142,37 @@ var parseAsType = {
 	number: (schema) => {
 		var swagger: ISwagger = {};
 
-		if (find(schema._tests, { name: 'integer' })) {
+		if (_.find(schema._tests, { name: 'integer' })) {
 			swagger.type = 'integer';
 		} else {
 			swagger.type = 'number';
-			if (find(schema._tests, { name: 'precision' })) {
+			if (_.find(schema._tests, { name: 'precision' })) {
 				swagger.format = 'double';
 			} else {
 				swagger.format = 'float';
 			}
 		}
 
-		if (find(schema._tests, { name: 'positive' })) {
+		if (_.find(schema._tests, { name: 'positive' })) {
 			swagger.minimum = 1;
 		}
 
-		if (find(schema._tests, { name: 'negative' })) {
+		if (_.find(schema._tests, { name: 'negative' })) {
 			swagger.maximum = -1;
 		}
 
-		const min = get(find(schema._tests, { name: 'min' }), 'arg');
+		const min = _.get(_.find(schema._tests, { name: 'min' }), 'arg');
 		if (min) {
 			swagger.minimum = min;
 		}
 
-		var max = get(find(schema._tests, { name: 'max' }), 'arg');
+		var max = _.get(_.find(schema._tests, { name: 'max' }), 'arg');
 		if (max) {
 			swagger.maximum = max;
 		}
 
 		var valids = schema._valids.values().filter((s) => typeof s === 'number');
-		if (get(schema, '_flags.allowOnly') && valids.length) {
+		if (_.get(schema, '_flags.allowOnly') && valids.length) {
 			swagger.enum = valids;
 		}
 
@@ -179,39 +180,39 @@ var parseAsType = {
 	},
 	string: (schema) => {
 		var swagger: ISwagger = { type: 'string' };
-		var strict = get(schema, '_settings.convert') === false;
+		var strict = _.get(schema, '_settings.convert') === false;
 
-		if (find(schema._tests, { name: 'alphanum' })) {
-			if (strict && find(schema._tests, { name: 'lowercase' })) {
+		if (_.find(schema._tests, { name: 'alphanum' })) {
+			if (strict && _.find(schema._tests, { name: 'lowercase' })) {
 				swagger.pattern = patterns.alphanumLower;
-			} else if (strict && find(schema._tests, { name: 'uppercase' })) {
+			} else if (strict && _.find(schema._tests, { name: 'uppercase' })) {
 				swagger.pattern = patterns.alphanumUpper;
 			} else {
 				swagger.pattern = patterns.alphanum;
 			}
 		}
 
-		if (find(schema._tests, { name: 'token' })) {
-			if (find(schema._tests, { name: 'lowercase' })) {
+		if (_.find(schema._tests, { name: 'token' })) {
+			if (_.find(schema._tests, { name: 'lowercase' })) {
 				swagger.pattern = patterns.alphanumLower;
-			} else if (find(schema._tests, { name: 'uppercase' })) {
+			} else if (_.find(schema._tests, { name: 'uppercase' })) {
 				swagger.pattern = patterns.alphanumUpper;
 			} else {
 				swagger.pattern = patterns.alphanum;
 			}
 		}
 
-		if (find(schema._tests, { name: 'email' })) {
+		if (_.find(schema._tests, { name: 'email' })) {
 			swagger.format = 'email';
 			if (swagger.pattern) delete swagger.pattern;
 		}
 
-		if (find(schema._tests, { name: 'isoDate' })) {
+		if (_.find(schema._tests, { name: 'isoDate' })) {
 			swagger.format = 'date-time';
 			if (swagger.pattern) delete swagger.pattern;
 		}
 
-		var pattern = get(find(schema._tests, { name: 'regex' }), 'arg.pattern');
+		var pattern = _.get(_.find(schema._tests, { name: 'regex' }), 'arg.pattern');
 		if (pattern) {
 			swagger.pattern = pattern.toString().slice(1, -1);
 		}
@@ -233,7 +234,7 @@ var parseAsType = {
 		}
 
 		var valids = schema._valids.values().filter((s) => typeof s === 'string');
-		if (get(schema, '_flags.allowOnly') && valids.length) {
+		if (_.get(schema, '_flags.allowOnly') && valids.length) {
 			swagger.enum = valids;
 		}
 
@@ -242,7 +243,7 @@ var parseAsType = {
 	binary: (schema) => {
 		var swagger: ISwagger = { type: 'string', format: 'binary' };
 
-		if (get(schema, '_flags.encoding') === 'base64') {
+		if (_.get(schema, '_flags.encoding') === 'base64') {
 			swagger.format = 'byte';
 		}
 
@@ -269,8 +270,8 @@ var parseAsType = {
 	alternatives: (schema, existingComponents, newComponentsByRef) => {
 		var index = meta(schema, 'swaggerIndex') || 0;
 
-		var matches = get(schema, [ '_inner', 'matches' ]);
-		var firstItem = get(matches, [ 0 ]);
+		var matches = _.get(schema, [ '_inner', 'matches' ]);
+		var firstItem = _.get(matches, [ 0 ]);
 
 		var itemsSchema;
 		if (firstItem.ref) {
@@ -280,29 +281,29 @@ var parseAsType = {
 				itemsSchema = index ? firstItem.otherwise : firstItem.then;
 			}
 		} else if (index) {
-			itemsSchema = get(matches, [ index, 'schema' ]);
+			itemsSchema = _.get(matches, [ index, 'schema' ]);
 		} else {
 			itemsSchema = firstItem.schema;
 		}
 
-		var items = parse(itemsSchema, merge({}, existingComponents || {}, newComponentsByRef || {}));
-		if (get(itemsSchema, '_flags.presence') === 'required') {
+		var items = parse(itemsSchema, _.merge({}, existingComponents || {}, newComponentsByRef || {}));
+		if (_.get(itemsSchema, '_flags.presence') === 'required') {
 			items.swagger.__required = true;
 		}
 
-		merge(newComponentsByRef, items.components || {});
+		_.merge(newComponentsByRef, items.components || {});
 
 		return items.swagger;
 	},
 	array: (schema, existingComponents, newComponentsByRef) => {
 		var index = meta(schema, 'swaggerIndex') || 0;
-		var itemsSchema = get(schema, [ '_inner', 'items', index ]);
+		var itemsSchema = _.get(schema, [ '_inner', 'items', index ]);
 
 		if (!itemsSchema) throw Error('Array schema does not define an items schema at index ' + index);
 
-		var items = parse(itemsSchema, merge({}, existingComponents || {}, newComponentsByRef || {}));
+		var items = parse(itemsSchema, _.merge({}, existingComponents || {}, newComponentsByRef || {}));
 
-		merge(newComponentsByRef, items.components || {});
+		_.merge(newComponentsByRef, items.components || {});
 
 		var swagger: ISwagger = { type: 'array' };
 
@@ -322,7 +323,7 @@ var parseAsType = {
 			}
 		}
 
-		if (find(schema._tests, { name: 'unique' })) {
+		if (_.find(schema._tests, { name: 'unique' })) {
 			swagger.uniqueItems = true;
 		}
 
@@ -334,9 +335,9 @@ var parseAsType = {
 		var requireds = [];
 		var properties = {};
 
-		var combinedComponents = merge({}, existingComponents || {}, newComponentsByRef || {});
+		var combinedComponents = _.merge({}, existingComponents || {}, newComponentsByRef || {});
 
-		var children = get(schema, '_inner.children') || [];
+		var children = _.get(schema, '_inner.children') || [];
 		children.forEach((child) => {
 			var key = child.key;
 			var prop = parse(child.schema, combinedComponents);
@@ -344,12 +345,12 @@ var parseAsType = {
 				return;
 			}
 
-			merge(newComponentsByRef, prop.components || {});
-			merge(combinedComponents, prop.components || {});
+			_.merge(newComponentsByRef, prop.components || {});
+			_.merge(combinedComponents, prop.components || {});
 
 			properties[key] = prop.swagger;
 
-			if (get(child, 'schema._flags.presence') === 'required' || prop.swagger.__required) {
+			if (_.get(child, 'schema._flags.presence') === 'required' || prop.swagger.__required) {
 				requireds.push(key);
 				delete prop.swagger.__required;
 			}
@@ -361,7 +362,7 @@ var parseAsType = {
 		}
 		swagger.properties = properties;
 
-		if (get(schema, '_flags.allowUnknown') === false) {
+		if (_.get(schema, '_flags.allowUnknown') === false) {
 			swagger.additionalProperties = false;
 		}
 
@@ -384,7 +385,7 @@ var parseAsType = {
 function meta (schema, key) {
 	var flattened = Object.assign.apply(null, [ {} ].concat(schema._meta));
 
-	return get(flattened, key);
+	return _.get(flattened, key);
 }
 
 function refDef (type, name) {
